@@ -1,5 +1,13 @@
 import { type ChildProcess, spawn } from "node:child_process";
 
+let shouldPrintDate: boolean = false;
+function printDate() {
+    if (shouldPrintDate) {
+        return ` [${new Date().toISOString()}]`;
+    }
+    return "";
+}
+
 let cwd: undefined | string;
 
 const cmdsFromArgv: string[] = [];
@@ -12,6 +20,8 @@ for (const arg of process.argv.slice(2)) {
         const [argument, value] = arg.split("=", 2);
         if (argument === "--cwd") {
             cwd = value;
+        } else if (argument === "--time") {
+            shouldPrintDate = true;
         }
     } else {
         cmdsFromArgv.push(arg);
@@ -61,13 +71,13 @@ function spawnCommand(commandStr: string, i: number) {
         const child = spawn(command, args, { cwd });
         childProcess.push(child);
         child.stdout.on("data", (data: Buffer) => {
-            console.log(`[${i}] [${new Date().toISOString()}]: ${data.toString("utf-8").trim()}`);
+            console.log(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}`);
         });
         child.stderr.on("data", (data: Buffer) => {
-            console.warn(`[${i}] [${new Date().toISOString()}] (err): ${data.toString("utf-8").trim()}`);
+            console.warn(`[${i}]${printDate()} [${new Date().toISOString()}] (err): ${data.toString("utf-8").trim()}`);
         });
         child.on("exit", (code) => {
-            console.log(`[${i}] [${new Date().toISOString()}]: "${commandStr}" Exited with code ${code ?? "SIGINT"}`);
+            console.log(`[${i}]${printDate()}: "${commandStr}" Exited with code ${code ?? "SIGINT"}`);
             if (code === 0) {
                 resolve(0);
             } else {
