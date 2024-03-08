@@ -1,4 +1,5 @@
 import { type ChildProcess, spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 
 let shouldPrintDate: boolean = false;
 function printDate() {
@@ -9,6 +10,7 @@ function printDate() {
 }
 
 let cwd: undefined | string;
+let commandsFile: undefined | string;
 
 const cmdsFromArgv: string[] = [];
 
@@ -22,19 +24,34 @@ for (const arg of process.argv.slice(2)) {
             cwd = value;
         } else if (argument === "--time") {
             shouldPrintDate = true;
+        } else if (argument === "--file") {
+            commandsFile = value;
         }
     } else {
         cmdsFromArgv.push(arg);
     }
 }
 
-if (cmdsFromArgv.length !== 1) {
+if (cmdsFromArgv.length !== 1 && !commandsFile) {
     console.error("doin it wrong..");
     process.exit(1);
 }
 
-const cmds: (string | string[])[] = JSON.parse(cmdsFromArgv[0]);
-// TODO: Validate `cmds`
+const cmds: (string | string[])[] = (() => {
+    if (commandsFile) {
+        try {
+            const cmds = JSON.parse(readFileSync(commandsFile).toString("utf-8"));
+            // TODO: Validate stuff
+            return cmds;
+        } catch (err) {
+            console.error("Failed to read file. Error:", err);
+            process.exit(1);
+        }
+    } else {
+        // TODO: Validate `cmds`
+        return JSON.parse(cmdsFromArgv[0]);
+    }
+})();
 
 const childProcess: ChildProcess[] = [];
 
