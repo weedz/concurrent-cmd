@@ -1,0 +1,22 @@
+{
+    "name": "@weedzcokie/concurrent-cmd",
+    "version": "0.1.1",
+    "description": "",
+    "type": "module",
+    "main": "dist/index.js",
+    "files": [
+        "dist/index.js"
+    ],
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "tsc",
+        "prepublish": "rm -rf dist && pnpm run build"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^20.11.25",
+        "typescript": "^5.4.2"
+    }
+}
