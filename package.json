@@ -1,6 +1,6 @@
 {
     "name": "@weedzcokie/concurrent-cmd",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "",
     "type": "module",
     "main": "dist/index.js",
@@ -14,6 +14,14 @@
     },
     "keywords": [],
     "author": "",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/weedz/concurrent-cmd.git"
+    },
+    "bugs": {
+        "url": "https://github.com/weedz/concurrent-cmd/issues"
+    },
+    "homepage": "https://github.com/weedz/concurrent-cmd#readme",
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^20.11.25",
