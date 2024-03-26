@@ -1,6 +1,6 @@
 {
     "name": "@weedzcokie/concurrent-cmd",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "",
     "type": "module",
     "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "homepage": "https://github.com/weedz/concurrent-cmd#readme",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^20.11.25",
-        "typescript": "^5.4.2"
+        "@types/node": "^20.11.30",
+        "typescript": "^5.4.3"
     }
 }
