@@ -17,7 +17,7 @@ const cmdsFromArgv: string[] = [];
 // Skip "bin" arguments (like `node` and the path to this script), assumes we run in "node" environment and
 // just skip the first 2 arguments :+1:
 for (const arg of process.argv.slice(2)) {
-    // Ignore flags and arguments
+    // Handle flags and arguments
     if (arg.startsWith("--")) {
         const [argument, value] = arg.split("=", 2);
         if (argument === "--cwd") {
