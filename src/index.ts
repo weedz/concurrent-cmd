@@ -32,11 +32,6 @@ for (const arg of process.argv.slice(2)) {
     }
 }
 
-if (cmdsFromArgv.length !== 1 && !commandsFile) {
-    console.error("doin it wrong..");
-    process.exit(1);
-}
-
 const cmds: (string | string[])[] = (() => {
     if (commandsFile) {
         try {
@@ -52,6 +47,11 @@ const cmds: (string | string[])[] = (() => {
         return JSON.parse(cmdsFromArgv[0]);
     }
 })();
+
+if (cmds.length === 0) {
+    console.error("doin it wrong..");
+    process.exit(1);
+}
 
 const childProcess: ChildProcess[] = [];
 
