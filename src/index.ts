@@ -93,7 +93,7 @@ function spawnCommand(commandStr: string, i: number) {
             process.stdout.write(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}\n`);
         });
         child.stderr.on("data", (data: Buffer) => {
-            process.stdout.write(`[${i}]${printDate()} [${new Date().toISOString()}] (err): ${data.toString("utf-8").trim()}\n`);
+            process.stdout.write(`[${i}]${printDate()} (STDERR): ${data.toString("utf-8").trim()}\n`);
         });
         child.on("exit", (code) => {
             process.stdout.write(`[${i}]${printDate()}: "${commandStr}" Exited with code ${code ?? "SIGINT"}\n`);
