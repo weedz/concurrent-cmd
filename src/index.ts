@@ -65,6 +65,7 @@ for (let i = 0; i < cmds.length; ++i) {
 }
 
 process.on("SIGINT", async (code) => {
+    console.log("Recieved SIGINT signal.");
     await Promise.allSettled(childProcess.map(child => {
         return new Promise<void>((resolve) => {
             child.once("exit", resolve);
@@ -88,18 +89,14 @@ function spawnCommand(commandStr: string, i: number) {
         const child = spawn(command, args, { cwd });
         childProcess.push(child);
         child.stdout.on("data", (data: Buffer) => {
-            console.log(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}`);
+            process.stdout.write(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}\n`);
         });
         child.stderr.on("data", (data: Buffer) => {
-            console.warn(`[${i}]${printDate()} [${new Date().toISOString()}] (err): ${data.toString("utf-8").trim()}`);
+            process.stdout.write(`[${i}]${printDate()} [${new Date().toISOString()}] (err): ${data.toString("utf-8").trim()}\n`);
         });
         child.on("exit", (code) => {
-            console.log(`[${i}]${printDate()}: "${commandStr}" Exited with code ${code ?? "SIGINT"}`);
-            if (code === 0) {
-                resolve(0);
-            } else {
-                resolve(code || 0);
-            }
+            process.stdout.write(`[${i}]${printDate()}: "${commandStr}" Exited with code ${code ?? "SIGINT"}\n`);
+            resolve(code || 0);
         });
     });
 }
