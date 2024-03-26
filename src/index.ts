@@ -79,14 +79,15 @@ process.on("SIGINT", async (code) => {
 function parseCommand(cmd: string) {
     const argsIndex = cmd.indexOf(" ");
     const command = argsIndex > 0 ? cmd.slice(0, argsIndex) : cmd;
-    const args = argsIndex > 0 ? cmd.slice(argsIndex + 1).split(" ") : undefined;
+    const args = argsIndex > 0 ? cmd.slice(argsIndex + 1).split(" ") : [];
     return { command, args };
 }
 
 function spawnCommand(commandStr: string, i: number) {
     return new Promise<number>((resolve) => {
         const { command, args } = parseCommand(commandStr);
-        const child = spawn(command, args, { cwd });
+
+        const child = spawn(command, args, { cwd, env: { FORCE_COLOR: "true" } });
         childProcess.push(child);
         child.stdout.on("data", (data: Buffer) => {
             process.stdout.write(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}\n`);
