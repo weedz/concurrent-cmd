@@ -1,7 +1,40 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { parseArgs } from "node:util";
 
-let shouldPrintDate: boolean = false;
+// TODO: Should probably use `yargs` instead
+function parseCommand(cmd: string) {
+    const argsIndex = cmd.indexOf(" ");
+    const command = argsIndex > 0 ? cmd.slice(0, argsIndex) : cmd;
+    const args = argsIndex > 0 ? cmd.slice(argsIndex + 1).split(" ") : [];
+    return { command, args };
+}
+
+function spawnCommand(commandStr: string, i: number) {
+    return new Promise<number>((resolve) => {
+        const { command, args } = parseCommand(commandStr);
+
+        const child = spawn(command, args, { cwd, env: newProcessEnv });
+        childProcess.push(child);
+        child.stdout.on("data", (data: Buffer) => {
+            process.stdout.write(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}\n`);
+        });
+        child.stderr.on("data", (data: Buffer) => {
+            process.stdout.write(`[${i}]${printDate()} (STDERR): ${data.toString("utf-8").trim()}\n`);
+        });
+        child.on("exit", (code) => {
+            process.stdout.write(`[${i}]${printDate()}: "${commandStr}" Exited with code ${code ?? "SIGINT"}\n`);
+            resolve(code || 0);
+        });
+    });
+}
+
+async function spawnSubcommands(subcommands: string[], i: number) {
+    for (const subcommand of subcommands) {
+        await spawnCommand(subcommand, i);
+    }
+}
+
 function printDate() {
     if (shouldPrintDate) {
         return ` [${new Date().toISOString()}]`;
@@ -9,45 +42,41 @@ function printDate() {
     return "";
 }
 
-let cwd: undefined | string;
-let commandsFile: undefined | string;
+const newProcessEnv = { ...process.env, FORCE_COLOR: "true" };
 
-const cmdsFromArgv: string[] = [];
-
-// Skip "bin" arguments (like `node` and the path to this script), assumes we run in "node" environment and
-// just skip the first 2 arguments :+1:
-for (const arg of process.argv.slice(2)) {
-    // Handle flags and arguments
-    if (arg.startsWith("--")) {
-        const [argument, value] = arg.split("=", 2);
-        if (argument === "--cwd") {
-            cwd = value;
-        } else if (argument === "--time") {
-            shouldPrintDate = true;
-        } else if (argument === "--file") {
-            commandsFile = value;
-        }
-    } else {
-        cmdsFromArgv.push(arg);
+const { values } = parseArgs({
+    options: {
+        cwd: { type: "string" },
+        time: { type: "boolean" },
+        file: { type: "string" },
+        cmd: { type: "string" },
     }
+});
+
+if (values.file && values.cmd) {
+    throw new Error("Only use ONE of '--file', '--cmd'");
 }
 
+const cwd = values.cwd;
+const shouldPrintDate = values.time || false;
+
 const cmds: (string | string[])[] = (() => {
-    if (commandsFile) {
+    if (values.file) {
         try {
-            const cmds = JSON.parse(readFileSync(commandsFile).toString("utf-8"));
+            const cmds = JSON.parse(readFileSync(values.file).toString("utf-8"));
             // TODO: Validate stuff
             return cmds;
         } catch (err) {
             console.error("Failed to read file. Error:", err);
             process.exit(1);
         }
-    } else {
+    } else if (values.cmd) {
         // TODO: Validate `cmds`
-        return JSON.parse(cmdsFromArgv[0]);
+        return JSON.parse(values.cmd);
+    } else {
+        throw new Error("Must give one of '--file', '--cmd'");
     }
 })();
-
 if (cmds.length === 0) {
     console.error("doin it wrong..");
     process.exit(1);
@@ -74,37 +103,4 @@ process.on("SIGINT", async (code) => {
     }));
     process.exit(0);
 });
-
-// TODO: Should probably use `yargs` instead
-function parseCommand(cmd: string) {
-    const argsIndex = cmd.indexOf(" ");
-    const command = argsIndex > 0 ? cmd.slice(0, argsIndex) : cmd;
-    const args = argsIndex > 0 ? cmd.slice(argsIndex + 1).split(" ") : [];
-    return { command, args };
-}
-
-function spawnCommand(commandStr: string, i: number) {
-    return new Promise<number>((resolve) => {
-        const { command, args } = parseCommand(commandStr);
-
-        const child = spawn(command, args, { cwd, env: { FORCE_COLOR: "true" } });
-        childProcess.push(child);
-        child.stdout.on("data", (data: Buffer) => {
-            process.stdout.write(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}\n`);
-        });
-        child.stderr.on("data", (data: Buffer) => {
-            process.stdout.write(`[${i}]${printDate()} (STDERR): ${data.toString("utf-8").trim()}\n`);
-        });
-        child.on("exit", (code) => {
-            process.stdout.write(`[${i}]${printDate()}: "${commandStr}" Exited with code ${code ?? "SIGINT"}\n`);
-            resolve(code || 0);
-        });
-    });
-}
-
-async function spawnSubcommands(subcommands: string[], i: number) {
-    for (const subcommand of subcommands) {
-        await spawnCommand(subcommand, i);
-    }
-}
 
