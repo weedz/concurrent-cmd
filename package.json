@@ -1,6 +1,6 @@
 {
     "name": "@weedzcokie/concurrent-cmd",
-    "version": "0.1.8",
+    "version": "0.2.0",
     "description": "",
     "type": "module",
     "main": "dist/index.js",
@@ -19,7 +19,7 @@
         "prepublish": "rm -rf dist && pnpm run build"
     },
     "keywords": [],
-    "author": "",
+    "author": "Linus Björklund",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/weedz/concurrent-cmd.git"
