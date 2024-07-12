@@ -31,13 +31,13 @@ export class Cmds {
             const i = this.#childProcess.push(child) - 1;
 
             child.stdout.on("data", (data: Buffer) => {
-                process.stdout.write(`[${i}]${printDate()}: ${data.toString("utf-8").trim()}\n`);
+                process.stdout.write(`[${i}]${this.printDate()}: ${data.toString("utf-8").trim()}\n`);
             });
             child.stderr.on("data", (data: Buffer) => {
-                process.stdout.write(`[${i}]${printDate()} ${styleText("red", "(STDERR)")}: ${data.toString("utf-8").trim()}\n`);
+                process.stdout.write(`[${i}]${this.printDate()} ${styleText("red", "(STDERR)")}: ${data.toString("utf-8").trim()}\n`);
             });
             child.on("exit", (code) => {
-                process.stdout.write(`[${i}]${printDate()}: '${command}' Exited with code ${code ?? "SIGINT"}\n`);
+                process.stdout.write(`[${i}]${this.printDate()}: '${command}' Exited with code ${code ?? "SIGINT"}\n`);
                 resolve(code || 0);
             });
         });
