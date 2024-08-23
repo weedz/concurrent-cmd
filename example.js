@@ -2,7 +2,9 @@ import * as fs from "node:fs";
 import { setTimeout } from "node:timers/promises";
 import { Cmds } from "@weedzcokie/concurrent-cmd";
 
-fs.rmSync("./dist", { recursive: true });
+if (fs.existsSync("./dist")) {
+    fs.rmSync("./dist", { recursive: true });
+}
 
 const newProcessEnv = { ...process.env, FORCE_COLOR: "true" };
 const ccmds = new Cmds(undefined, newProcessEnv);
