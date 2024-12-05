@@ -3,7 +3,7 @@ import { setTimeout } from "node:timers/promises";
 import { Cmds } from "@weedzcokie/concurrent-cmd";
 
 if (fs.existsSync("./dist")) {
-    fs.rmSync("./dist", { recursive: true });
+  fs.rmSync("./dist", { recursive: true });
 }
 
 const newProcessEnv = { ...process.env, FORCE_COLOR: "true" };
@@ -15,13 +15,10 @@ await setTimeout(1000);
 
 // Or wait until `dist` directory is created
 while (!fs.existsSync("./dist")) {
-    await setTimeout(100);
+  await setTimeout(100);
 }
 
 ccmds.spawnCommand("node", ["--watch", "--watch-preserve-output", "dist/main.js"]);
 
-process.on("SIGINT", async (code) => {
-    console.log("Recieved SIGINT signal.");
-    await Promise.allSettled(ccmds.killChildren(code));
-    process.exit(0);
-});
+ccmds.installSignalHandler("SIGINT");
+

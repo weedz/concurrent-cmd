@@ -1,37 +1,37 @@
 {
-    "name": "@weedzcokie/concurrent-cmd",
-    "version": "0.2.1",
-    "description": "",
-    "type": "module",
-    "main": "dist/index.js",
-    "bin": {
-        "concurrent-cmd": "dist/bin.js"
-    },
-    "exports": {
-        "import": "./dist/index.js"
-    },
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "dev": "tsc --watch",
-        "build": "tsc",
-        "prepublish": "rm -rf dist && pnpm run build"
-    },
-    "keywords": [],
-    "author": "Linus Björklund",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/weedz/concurrent-cmd.git"
-    },
-    "bugs": {
-        "url": "https://github.com/weedz/concurrent-cmd/issues"
-    },
-    "homepage": "https://github.com/weedz/concurrent-cmd#readme",
-    "license": "MIT",
-    "devDependencies": {
-        "@types/node": "^22.5.0",
-        "typescript": "^5.5.4"
-    },
-    "packageManager": "pnpm@9.8.0+sha512.8e4c3550fb500e808dbc30bb0ce4dd1eb614e30b1c55245f211591ec2cdf9c611cabd34e1364b42f564bd54b3945ed0f49d61d1bbf2ec9bd74b866fcdc723276"
+  "name": "@weedzcokie/concurrent-cmd",
+  "version": "0.2.2",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "concurrent-cmd": "dist/bin.js"
+  },
+  "exports": {
+    "import": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "prepublish": "rm -rf dist && pnpm run build"
+  },
+  "keywords": [],
+  "author": "Linus Björklund",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weedz/concurrent-cmd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/weedz/concurrent-cmd/issues"
+  },
+  "homepage": "https://github.com/weedz/concurrent-cmd#readme",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab"
 }
