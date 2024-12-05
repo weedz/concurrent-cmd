@@ -18,7 +18,7 @@ while (!fs.existsSync("./dist")) {
     await setTimeout(100);
 }
 
-ccmds.spawnCommand("node", ["--watch", "dist/main.js"]);
+ccmds.spawnCommand("node", ["--watch", "--watch-preserve-output", "dist/main.js"]);
 
 process.on("SIGINT", async (code) => {
     console.log("Recieved SIGINT signal.");
